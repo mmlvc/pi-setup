@@ -1,0 +1,33 @@
+{
+  "defaultProvider": "routercheap",
+  "defaultModel": "gpt-6.1-sol",
+  "defaultThinkingLevel": "low",
+  "enabledModels": [
+    "routercheap/*",
+    "laysoai/*"
+  ],
+  "lastChangelogVersion": "1.2.0",
+  "theme": "dark",
+  "packages": [
+    "npm:pi-bar",
+    "npm:@lll9p/pi-better-compaction",
+    "npm:pi-agent-browser-native",
+    "npm:pi-tool-display",
+    "git:https://github.com/HazAT/pi-interactive-subagents.git",
+    "npm:pi-cmux"
+  ],
+  "skills": [
+    "-skills/general-video/SKILL.md",
+    "-skills/hyperframes/SKILL.md",
+    "-skills/hyperframes-animation/SKILL.md",
+    "-skills/hyperframes-audio/SKILL.md",
+    "-skills/hyperframes-cli/SKILL.md",
+    "-skills/hyperframes-core/SKILL.md",
+    "-skills/hyperframes-creative/SKILL.md",
+    "-skills/hyperframes-keyframes/SKILL.md",
+    "-skills/hyperframes-registry/SKILL.md",
+    "-skills/media-use/SKILL.md",
+    "-skills/talking-head-recut/SKILL.md"
+  ],
+  "hideThinkingBlock": true
+}

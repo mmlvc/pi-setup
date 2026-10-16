@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "compactionVersion": "v2",
+  "compactionModel": null,
+  "allowCompactionContinuityBreak": false,
+  "responsesCompactApis": ["openai-responses"]
+}

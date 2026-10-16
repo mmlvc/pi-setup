@@ -1,0 +1,11 @@
+{
+  "name": "pi-jev-browser",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Pi extension: Jev (TypeSafe System One) browser task loop over the pi-native CDP browser session.",
+  "dependencies": {
+    "@jkudish/jev-browser": "file:vendor/jev-browser",
+    "playwright-core": "^1.63.0"
+  }
+}

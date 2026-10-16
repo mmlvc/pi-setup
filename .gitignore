@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+*.log
+.env
+.env.*
+!.env.example
+**/auth.json
+**/trust.json
+**/sessions/
+**/browser-state/
+**/cache/
+**/dist/
