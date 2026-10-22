@@ -4,6 +4,22 @@ Portable, project-neutral Pi coding-agent configuration.
 
 This repository contains reusable agent instructions, worker definitions, skills, extensions, model routing, and UI settings. It intentionally excludes project-specific instructions, sessions, auth state, browser state, production credentials, and secrets.
 
+## Tools beyond default Pi
+
+- **Pi Bar** (`pi-bar`): additional agent UI/status bar.
+- **Better Compaction** (`@lll9p/pi-better-compaction`): improved context compaction.
+- **Pi Agent Browser Native** (`pi-agent-browser-native`): browser automation tools for Pi agents.
+- **Pi Tool Display** (`pi-tool-display`): configurable tool-call display.
+- **Interactive Subagents** (`pi-interactive-subagents`): launch and coordinate interactive subagents.
+- **Pi Cmux** (`pi-cmux`): cmux integration for Pi.
+- **JEV Browser extension** (`.pi/agent/extensions/jev-browser/`): uses the JEV browser package with the native Pi browser session.
+- **RTK command rewriting** (`.pi/agent/extensions/rtk.ts`): delegates supported Bash command rewrites to the installed RTK CLI.
+- **RTK output selection** (`.pi/agent/extensions/rtk-output/`): optional JEV-based selection of relevant fragments from large tool outputs; see [RTK tool-output setup](RTK_TOOL_OUTPUT.md).
+- **RTK CLI**: external prerequisite for command rewriting and RTK output fallback.
+- **JEV / TypeSafe System One**: external scoring service used by the JEV browser and, optionally, RTK output selection.
+
+The Pi packages and local extensions are configured in `.pi/agent/settings.json` and `.pi/agent/extensions/`. Default Pi capabilities are not listed here.
+
 ## Contents
 
 - `.pi/agent/AGENTS.md`: general coding-agent behavior
