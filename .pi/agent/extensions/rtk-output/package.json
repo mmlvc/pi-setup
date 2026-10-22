@@ -1,0 +1,10 @@
+{
+  "name": "pi-rtk-output-jev",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "RTK tool-output processing with optional JEV fragment selection",
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.52"
+  }
+}
