@@ -13,6 +13,9 @@ const threshold = () => intEnv("RTK_JEV_THRESHOLD", 16_000, 1_000, 2_000_000);
 function intEnv(name: string, fallback: number, min: number, max: number): number {
 	const n = Number(process.env[name]); return Number.isFinite(n) ? Math.max(min, Math.min(max, Math.floor(n))) : fallback;
 }
+function debugLog(message: string): void {
+	if (process.env.RTK_JEV_DEBUG === "1") console.error(`[rtk-jev] ${message}`);
+}
 function textOnly(event: ToolResultEvent): string | undefined {
 	const out: string[] = []; for (const b of event.content) { if (b.type !== "text") return; out.push(b.text); } return out.join("\n");
 }
@@ -58,7 +61,14 @@ async function save(text: string, session: string): Promise<string> {
 }
 export async function retrieve(id:string,from:number,lines:number):Promise<string>{
 	const lineBreak="\n";
-	if(!/^[a-f0-9]{16}$/.test(id))throw new Error("Invalid output ID"); const item=JSON.parse(await readFile(join(ROOT,`${id}.json`),"utf8")); const all=String(item.text).split(lineBreak),start=Math.max(1,from),count=Math.max(1,Math.min(300,lines));
+	if(!/^[a-f0-9]{16}$/.test(id))throw new Error("Invalid output ID");
+	let item: { text: string };
+	try { item=JSON.parse(await readFile(join(ROOT,`${id}.json`),"utf8")); }
+	catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") throw new Error(`Output ID not found: ${id}`);
+		throw error;
+	}
+	const all=String(item.text).split(lineBreak),start=Math.max(1,from),count=Math.max(1,Math.min(300,lines));
 	let body=all.slice(start-1,start-1+count).join("\n"); if(body.length>32_000)body=body.slice(0,32_000)+"\n[range capped at 32000 characters]";
 	return `Output ${id}; available lines ${all.length}; showing ${start}-${Math.min(all.length,start+count-1)}\n`+body;
 }
@@ -108,8 +118,13 @@ export default function(pi:ExtensionAPI){
 			const budget=intEnv("RTK_JEV_BUDGET",8000,1000,100000),picked=selectFragments(fs,scores,budget);
 			if(picked.length===0)throw new Error("JEV selected no fragments; conservative pass-through");
 			const omitted=Math.max(0,body.length-picked.reduce((n,f)=>n+f.text.length,0)); output=`Selected ${picked.length}/${fs.length} blocks; omitted about ${omitted} characters. Full available output ID: ${id}. Retrieve ranges with rtk_output_recall({id:"${id}",from:<line>,lines:<1-300>}).\n`+picked.map(f=>`[${f.id} lines ${f.from+1}-${f.to}${f.path?` ${f.path}:${f.startLine??"?"}`:""}]\n${f.text}`).join("\n\n")+trailer;
-			console.warn(`[rtk-jev] id=${id} blocks=${picked.length}/${fs.length} chars=${raw.length}->${output.length} usage=${JSON.stringify(data.usage??{})}`);
-		}catch(e){console.warn(`[rtk-jev] selection failed; passing through to the existing RTK command path: ${e instanceof Error?e.message:"unknown"}`);output=raw;}
+			debugLog(`selected id=${id} blocks=${picked.length}/${fs.length} chars=${raw.length}->${output.length} usage=${JSON.stringify(data.usage??{})}`);
+		}catch(e){
+			// JEV is an optional ranking layer. Offline, timeout, and schema errors
+			// are expected fallbacks and must not pollute Pi's warning stream.
+			debugLog(`selection fallback: ${e instanceof Error?e.message:"unknown"}`);
+			output=raw;
+		}
 		if(output===raw&&eligible){const filtered=await rtkFilter(body,event.toolName,ctx.cwd,ctx.signal);if(filtered&&rawId)output=`RTK-filtered output; full available result ID ${rawId}. Retrieve ranges with rtk_output_recall({id:"${rawId}",from:<line>,lines:<1-300>}).\n`+filtered+trailer;}
 		if(output!==raw)return{content:[{type:"text",text:output}],details:event.details,structuredContent:event.structuredContent,isError:event.isError,usage:event.usage};
 	});
