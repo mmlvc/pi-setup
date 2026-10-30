@@ -125,7 +125,7 @@ export default function(pi:ExtensionAPI){
 			debugLog(`selection fallback: ${e instanceof Error?e.message:"unknown"}`);
 			output=raw;
 		}
-		if(output===raw&&eligible){const filtered=await rtkFilter(body,event.toolName,ctx.cwd,ctx.signal);if(filtered&&rawId)output=`RTK-filtered output; full available result ID ${rawId}. Retrieve ranges with rtk_output_recall({id:"${rawId}",from:<line>,lines:<1-300>}).\n`+filtered+trailer;}
+		if(output===raw&&eligible&&event.isError){const filtered=await rtkFilter(body,event.toolName,ctx.cwd,ctx.signal);if(filtered&&rawId)output=`RTK-filtered output; full available result ID ${rawId}. Retrieve ranges with rtk_output_recall({id:"${rawId}",from:<line>,lines:<1-300>}).\n`+filtered+trailer;}
 		if(output!==raw)return{content:[{type:"text",text:output}],details:event.details,structuredContent:event.structuredContent,isError:event.isError,usage:event.usage};
 	});
 }
